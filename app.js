@@ -1,142 +1,145 @@
-//event elements
-const form = document.querySelector("form");
-const taskList = document.querySelector(".collection");
-const deleteTasksBtn = document.querySelector("#delete-tasks");
+// event elements
+const form = document.querySelector('form');
+const booksList = document.querySelector('#books-list');
 
-//events
-// selectors ei ole vaja kirjutada. Sulud, jutumärk FORM ja tuleb selectors automaatselt.
-form.addEventListener("submit", addTask);
-taskList.addEventListener("click", deleteTask);
-deleteTasksBtn.addEventListener("click", deleteTasks);
-document.addEventListener("DOMDocumentLoaded", getTasksfromLocalStorage);
+// events
+form.addEventListener('submit', addBook);
+booksList.addEventListener('click', deleteBook);
+document.addEventListener('DOMContentLoaded', getBooksFromLocalStorage);
 
-function getTasksfromLocalStorage() {
-    let tasks;
-    if(localStorage.getItem("tasks") === null){
-        tasks = [];
+function getBooksFromLocalStorage(){
+    let books;
+    if(localStorage.getItem('books') === null){
+        books = [];
     } else {
-        tasks = JSON.parse(localStorage.getItem("tasks"));
+        books = JSON.parse(localStorage.getItem('books'));
     }
-    tasks.forEach(function (tasksElemet) {
-        //create li element
-        const li = document.createElement("li");
-        //add scc class
-        li.className = "collection-item";
-        //create txt element
-        const text = document.createTextNode(tasksElemet);
-        //add txt to li item
-        li.appendChild(text);
-        //create a element
-        const link = document.createElement("a");
-        //add css class
-        link.className = "secondary-content";
-        //set href atribute to a
-        link.setAttribute("href", "#");
-        //add text content to a
-        link.appendChild(document.createTextNode("X"));
-        //add a to li
-        li.appendChild(link);
-        //add li item to ul
-        const ul = document.querySelector(".collection");
-        ul.appendChild(li);
-    });
+    for(let i = 0; i < books.length; i++){
+        let book = books[i];
+        // create <tr> element
+        const tr = document.createElement('tr');
+        for(let i = 0; i < book.length; i++){
+            // create <td> element
+            let td = document.createElement('td');
+            // create text element
+            let text = document.createTextNode(book[i]);
+            // add text to <td>
+            td.appendChild(text);
+            // add td to tr
+            tr.appendChild(td);
+            //tr.appendChild(td);
+        }
+        // X link
+        // create <td> element
+        td = document.createElement('td');
+        // create <a> element
+        const link = document.createElement('a');
+        // set href attribute to <a>
+        link.setAttribute('href', '#');
+        // add text content to <a>
+        link.appendChild(document.createTextNode('X'));
+        // add <a> to <li>
+        td.appendChild(link);
+        // add td to tr
+        tr.appendChild(td);
+        // add tr to tbody
+        booksList.appendChild(tr);
+    }
 }
 
-function deleteTasks() {
-    //event.target.previousElementSibling.innerHTML = "";
-    //taskList.innerHTML = ``;
-    while(taskList.firstChild) {
-        taskList.removeChild(taskList.firstChild);
-    }
-    deleteAllTaskFromLocalStorage();
-
-}
-
-function deleteAllTaskFromLocalStorage() {
-    //localStorage.clear();
-    if(localStorage.getItem("tasks") === null){
-        let tasks = [];
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-
-    }
-    localStorage.removeItem("tasks");
-}
-
-function deleteTask(event) {
-    if(event.target.textContent === "X") {
-        if(confirm("Do you want to delete this task?")) {
-            event.target.parentElement.remove();
-            task = event.target.parentElement.firstChild.textContent;
-            deleteTaskFromLocalStorage(task)
+function deleteBook(event){
+    if(event.target.textContent === 'X'){
+        if(confirm('Do you want to delete this book?')){
+            event.target.parentElement.parentElement.remove();
+            //let bookTitle = event.target.parentElement.parentElement.firstChild.textContent;
+            let bookISBN = event.target.parentElement.previousElementSibling.textContent;
+            deleteBookFromLocalStorage(bookISBN);
         }
     }
 }
 
-function deleteTaskFromLocalStorage(task){
-    let tasks;
-    if(localStorage.getItem("tasks") === null){
-        tasks = [];
+function deleteBookFromLocalStorage(bookISBN){
+    let books;
+    if(localStorage.getItem('books') === null){
+        books = [];
     } else {
-        tasks = JSON.parse(localStorage.getItem("tasks"));
+        books = JSON.parse(localStorage.getItem('books'));
     }
-    tasks.forEach(function (tasksElement, index) {
-        if (tasksElement === task) {
-            tasks.splice(index, 1);
+    /*
+    for(let i = 0; i < books.length; i++){
+        let book = books[i];
+        if(book[2] === bookISBN){
+            books.splice(i, 1);
+        }
+    }
+    */
+
+    books.forEach(function (book, index){
+        if(book[2] === bookISBN){
+            books.splice(index, 1);
         }
     });
 
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    localStorage.setItem('books', JSON.stringify(books));
 }
 
-function addTask(event) {
-    //event = e Ei pea pikalt välja kirjutama
-    const taskInput = document.querySelector("#task");
-    let task = taskInput.value;
-    //create li element
-    const li = document.createElement("li");
-    //add scc class
-    li.className = "collection-item";
-    //create txt element
-    const text = document.createTextNode(task);
-    //add txt to li item
-    li.appendChild(text);
-    //create a element
-    const link = document.createElement("a");
-    //add css class
-    link.className = "secondary-content";
-    //set href atribute to a
-    link.setAttribute("href", "#");
-    //add text content to a
-    link.appendChild(document.createTextNode("X"));
-    //add a to li
-    li.appendChild(link);
-    //add li item to ul
-    const ul = document.querySelector(".collection");
-    ul.appendChild(li);
-    //save task
+function addBook(event){
+    // get form input data
+    const titleInput = document.querySelector('#title');
+    const authorInput = document.querySelector('#author');
+    const isbnInput = document.querySelector('#isbn');
 
+    let title = titleInput.value;
+    let author = authorInput.value;
+    let isbn = isbnInput.value;
 
-    addTaskToLocalStorage(task);
-
-    //rea tühjaks tegemine peale taski lisamist
-    taskInput.value = "";
-
+    // create book
+    const book = [title, author, isbn]
+    // create <tr> element
+    const tr = document.createElement('tr');
+    for(let i = 0; i < book.length; i++){
+        // create <td> element
+        let td = document.createElement('td');
+        // create text element
+        let text = document.createTextNode(book[i]);
+        // add text to <td>
+        td.appendChild(text);
+        // add td to tr
+        tr.appendChild(td);// add td to tr
+        tr.appendChild(td);
+    }
+    // X link
+    // create <td> element
+    td = document.createElement('td');
+    // create <a> element
+    const link = document.createElement('a');
+    // set href attribute to <a>
+    link.setAttribute('href', '#');
+    // add text content to <a>
+    link.appendChild(document.createTextNode('X'));
+    // add <a> to <li>
+    td.appendChild(link);
+    // add td to tr
+    tr.appendChild(td);
+    // add tr to tbody
+    booksList.appendChild(tr);
+    // save book
+    addBookToLocalStorage(book);
+    titleInput.value = '';
+    authorInput.value = '';
+    isbnInput.value = '';
     event.preventDefault();
 }
 
-function addTaskToLocalStorage(task) {
-    //salvesta taskid
-    let tasks;
-    if(localStorage.getItem("tasks") === null){
-        tasks = [];
+function addBookToLocalStorage(book){
+    let books;
+    if(localStorage.getItem('books') === null){
+        books = [];
     } else {
-        tasks = JSON.parse(localStorage.getItem("tasks"));
+        books = JSON.parse(localStorage.getItem('books'));
     }
-
-    tasks.push(task);
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-
-
+    books.push(book);
+    localStorage.setItem('books', JSON.stringify(books));
 }
 
-//console.log(form)
+
