@@ -26,15 +26,15 @@ function getBooksFromLocalStorage(){
             // add text to <td>
             td.appendChild(text);
             // add td to tr
+            tr.appendChild(td);// add td to tr
             tr.appendChild(td);
-            //tr.appendChild(td);
         }
         // X link
         // create <td> element
         td = document.createElement('td');
         // create <a> element
         const link = document.createElement('a');
-        // set href attribute to <a>
+        // set href atribute to <a>
         link.setAttribute('href', '#');
         // add text content to <a>
         link.appendChild(document.createTextNode('X'));
@@ -105,6 +105,7 @@ function addBook(event){
         // add text to <td>
         td.appendChild(text);
         // add td to tr
+        tr.appendChild(td);// add td to tr
         tr.appendChild(td);
     }
     // X link
@@ -112,7 +113,7 @@ function addBook(event){
     td = document.createElement('td');
     // create <a> element
     const link = document.createElement('a');
-    // set href attribute to <a>
+    // set href atribute to <a>
     link.setAttribute('href', '#');
     // add text content to <a>
     link.appendChild(document.createTextNode('X'));
