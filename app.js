@@ -105,7 +105,6 @@ function addBook(event){
         // add text to <td>
         td.appendChild(text);
         // add td to tr
-        tr.appendChild(td);// add td to tr
         tr.appendChild(td);
     }
     // X link
